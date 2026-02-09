@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💝 WONDERWALL's Love System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #ffe0f0 50%, #ffd6e8 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .heart-bg {
+            position: fixed;
+            font-size: 30px;
+            opacity: 0.1;
+            animation: float 20s infinite;
+            z-index: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-50px) rotate(10deg); }
+        }
+
+        .container {
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ff1493;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #ff69b4;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 20px;
+            border: none;
+            background: #ffe0f0;
+            color: #d1477a;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab:hover {
+            background: #ffcce5;
+            transform: translateY(-2px);
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+        }
+
+        .content {
+            display: none;
+        }
+
+        .content.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #d1477a;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ffe0f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #ff69b4;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+            font-family: inherit;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff1493, #ff69b4);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(255, 20, 147, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .counter {
+            text-align: center;
+            padding: 30px;
+        }
+
+        .counter-display {
+            font-size: 4em;
+            color: #ff1493;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+        }
+
+        .message-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .saved-message {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #ffe0f0;
+        }
+
+        .saved-message strong {
+            color: #ff1493;
+        }
+
+        .delete-btn {
+            background: #ffb6c1;
+            color: #d1477a;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .delete-btn:hover {
+            background: #ff69b4;
+            color: white;
+        }
+
+        .floating-heart {
+            position: fixed;
+            font-size: 30px;
+            pointer-events: none;
+            animation: rise 3s ease-in forwards;
+            z-index: 9999;
+        }
+
+        @keyframes rise {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-500px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .quote-display {
+            background: linear-gradient(135deg, #fff0f5, #ffe0f0);
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            font-style: italic;
+            color: #d1477a;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating hearts background -->
+    <div class="heart-bg" style="top: 10%; left: 10%;">💖</div>
+    <div class="heart-bg" style="top: 70%; left: 80%; animation-delay: 5s;">💕</div>
+    <div class="heart-bg" style="top: 30%; left: 90%; animation-delay: 10s;">💝</div>
+    <div class="heart-bg" style="top: 80%; left: 15%; animation-delay: 15s;">💗</div>
+
+    <div class="container">
+        <h1>💝 WONDERWALL</h1>
+        <p class="subtitle">Spread love and joy this Valentine's Day!</p>
+
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('create')">✍️ Create Card</button>
+            <button class="tab" onclick="showTab('counter')">💕 Love Counter</button>
+            <button class="tab" onclick="showTab('quotes')">💬 Love Quotes</button>
+        </div>
+
+        <!-- Create Card Tab -->
+        <div id="create" class="content active">
+            <div class="input-group">
+                <label>To: (Recipient's Name)</label>
+                <input type="text" id="recipientName" placeholder="Enter your loved one's name">
+            </div>
+            <div class="input-group">
+                <label>Your Message:</label>
+                <textarea id="customMessage" placeholder="Write your heartfelt message here..."></textarea>
+            </div>
+            <div class="input-group">
+                <label>From:</label>
+                <input type="text" id="senderName" placeholder="Your name">
+            </div>
+            <button class="btn" onclick="saveMessage()">💌 Save Love Note</button>
+            
+            <div id="savedMessages" class="message-list" style="margin-top: 30px;"></div>
+        </div>
+
+        <!-- Love Counter Tab -->
+        <div id="counter" class="content">
+            <div class="counter">
+                <p style="color: #d1477a; font-size: 1.2em; margin-bottom: 10px;">How much do you love them?</p>
+                <div class="counter-display" id="loveCount">0</div>
+                <button class="btn" onclick="incrementLove()">❤️ Add More Love!</button>
+                <button class="btn" onclick="resetLove()" style="background: #ffb6c1; margin-left: 10px;">🔄 Reset</button>
+            </div>
+        </div>
+
+        <!-- Love Quotes Tab -->
+        <div id="quotes" class="content">
+            <div class="quote-display" id="quoteDisplay">
+                Click the button below to get a romantic quote!
+            </div>
+            <button class="btn" onclick="showRandomQuote()">💫 Get Love Quote</button>
+        </div>
+    </div>
+
+    <script>
+        let loveCounter = 0;
+        let savedNotes = [];
+
+        const loveQuotes = [
+            "Love is composed of a single soul inhabiting two bodies. - Aristotle",
+            "The best thing to hold onto in life is each other. - Audrey Hepburn",
+            "You know you're in love when you can't fall asleep because reality is finally better than your dreams. - Dr. Seuss",
+            "Love is not about how many days, months, or years you have been together. Love is about how much you love each other every single day.",
+            "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine. - Maya Angelou",
+            "I love you not only for what you are, but for what I am when I am with you. - Roy Croft",
+            "Whatever our souls are made of, yours and mine are the same. - Emily Brontë",
+            "The best love is the kind that awakens the soul and makes us reach for more. - The Notebook"
+        ];
+
+        function showTab(tabName) {
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function incrementLove() {
+            loveCounter++;
+            document.getElementById('loveCount').textContent = loveCounter;
+            
+            // Create random floating hearts
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.textContent = ['❤️', '💕', '💖', '💗', '💝'][Math.floor(Math.random() * 5)];
+                    heart.style.left = (Math.random() * window.innerWidth) + 'px';
+                    heart.style.top = (Math.random() * window.innerHeight) + 'px';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 100);
+            }
+        }
+
+        function resetLove() {
+            loveCounter = 0;
+            document.getElementById('loveCount').textContent = loveCounter;
+        }
+
+        function saveMessage() {
+            const recipient = document.getElementById('recipientName').value;
+            const message = document.getElementById('customMessage').value;
+            const sender = document.getElementById('senderName').value;
+
+            if (!recipient || !message || !sender) {
+                alert('Please fill in all fields! 💕');
+                return;
+            }
+
+            const note = { recipient, message, sender, id: Date.now() };
+            savedNotes.push(note);
+            displaySavedMessages();
+
+            // Clear form
+            document.getElementById('recipientName').value = '';
+            document.getElementById('customMessage').value = '';
+            document.getElementById('senderName').value = '';
+
+            alert('💌 Love note saved successfully!');
+        }
+
+        function displaySavedMessages() {
+            const container = document.getElementById('savedMessages');
+            container.innerHTML = '<h3 style="color: #ff1493; margin-bottom: 15px;">📝 Your Saved Love Notes</h3>';
+            
+            savedNotes.forEach(note => {
+                const noteDiv = document.createElement('div');
+                noteDiv.className = 'saved-message';
+                noteDiv.innerHTML = `
+                    <strong>To: ${note.recipient}</strong><br>
+                    <p style="margin: 10px 0;">${note.message}</p>
+                    <em>From: ${note.sender}</em>
+                    <button class="delete-btn" onclick="deleteNote(${note.id})">🗑️ Delete</button>
+                `;
+                container.appendChild(noteDiv);
+            });
+        }
+
+        function deleteNote(id) {
+            savedNotes = savedNotes.filter(note => note.id !== id);
+            displaySavedMessages();
+        }
+
+        function showRandomQuote() {
+            const randomQuote = loveQuotes[Math.floor(Math.random() * loveQuotes.length)];
+            document.getElementById('quoteDisplay').textContent = randomQuote;
+            
+            // Create some hearts
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'floating-heart';
+                    heart.textContent = '💖';
+                    heart.style.left = (Math.random() * window.innerWidth) + 'px';
+                    heart.style.top = (Math.random() * window.innerHeight) + 'px';
+                    document.body.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 200);
+            }
+        }
+    </script>
+</body>
+</html>
